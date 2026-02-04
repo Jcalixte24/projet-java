@@ -106,28 +106,102 @@ public class Main {
             int choix = sc.nextInt();
             sc.nextLine();
             switch (choix) {
-                case 1:// catalogues
-                    // ********************************  menu film ********************************************
-                    System.out.println("\n-----------------------------------------------|");
-                    System.out.println("|             🎞️  FILMS À L'AFFICHE  🎞️          |");
-                    System.out.println("------------------------------------------------|");
+                case 1: // Catalogue et Recherche
 
-                    // liste film dynamique
+                    System.out.println("\n--- 🎞️ CATALOGUE 🎞️ ---");
                     for (int i = 0; i < listeFilms.size(); i++) {
-                        System.out.printf("|  %-2d. %-40s |\n", (i+1), listeFilms.get(i));
-                    }
-                    System.out.println("------------------------------------------------|");
-                    // *******************************************************************
-                    System.out.println("Appuyer sur 0 pour retourner en arrière");
-                    int choix1= sc.nextInt();
-                    // """"""fonction retour**********
-                    if (choix1==0){
-                        System.out.printf(all_menu.get(0)); // lancement menu
-                    }else {
-                         choix1= sc.nextInt();
-                         sc.nextLine();
+                        System.out.printf("|  %-2d. %-40s |\n", (i + 1), listeFilms.get(i));
                     }
 
+                    //  partie recherche
+                    System.out.println("\n------------------------------------------------");
+                    System.out.println("Taper 0 pour retour, ou écrivez un mot pour chercher un film (ex: 'roi') :");
+
+                    //
+                    if (sc.hasNextInt()) { // pour vérifier dans quel cas se situer
+                        int choixRetour = sc.nextInt();
+                        sc.nextLine();
+                        if (choixRetour == 0) {
+                        }
+                    } else {
+                        //*************************************** RECHERCHE*****************************************
+                        String recherche=sc.nextLine().toLowerCase(); //
+                        boolean trouve = false;
+
+                        System.out.println("\n RÉSULTATS DE LA RECHERCHE :");
+
+                        // LA BOUCLE DE PARCOURS
+                        for (int i = 0; i < listeFilms.size(); i++) {
+                            String filmActuel = listeFilms.get(i).toLowerCase();
+                            if (filmActuel.contains(recherche)) {
+                                System.out.printf("Film(s) trouvé(s) : [%d] %s\n", (i + 1), listeFilms.get(i));
+                                System.out.println(" Horaires : " + horaires.get(i)); // Bonus : affiche l'horaire direct
+                                trouve = true;
+                            }
+                        }
+
+                        if (!trouve) {
+                            System.out.println("Aucun film ne correspond à votre recherche.");
+
+                        }else System.out.println("\n------------------------------------------------");
+
+                        System.out.println("Voulez-vous réserver un de ces films ?");
+                        System.out.print("Entrez le numéro du film (ex: 1) ou 0 pour revenir au menu : ");
+                        int choix_film = sc.nextInt();
+                        sc.nextLine();
+                        //""""""""""""""""""""""""""""""on re rentre dans la boucle avec réservation""""""""""""""""""""""""
+                        // """"""fonction retour**********
+                        if (choix_film==0){
+                            System.out.printf(all_menu.get(0)); // lancement menu
+                            break;
+                        }else {
+                            System.out.print("Combien de places souhaitez-vous (entre 1 et 10) ?");
+                            int nb_places = sc.nextInt();
+                            sc.nextLine();
+
+                            System.out.printf("Vous avez choisi %s", listeFilms.get(choix_film - 1));
+                            System.out.print("\n Veuillez choisir votre créneau horaire : ");
+                            System.out.printf("\n %s", horaires.get(choix_film-1));
+                            System.out.print("\n Ecrivez le choix de l'heure comme écrit devant vous : ");
+                            String heure = sc.nextLine();
+                            System.out.print("\nQuels types de tickets voulez-vous  ?");
+                            System.out.println("\n1.Tarifs réduits/ 2.Tarifs normals ");
+                            int type_tick = sc.nextInt();
+                            sc.nextLine();
+
+                            // condition prix
+                            int prix = 0;
+                            if (type_tick == 1) {  //tarif normales
+                                prix = nb_places * 15;
+
+                            } else if (type_tick == 2) {
+                                prix = nb_places * 10;
+
+                            } else {
+                                System.out.print("Erreur de choix! veuillez relancer la session");
+                            }
+
+                            String ticket = "TICKET DE RESERVATION\n" +
+                                    "======================================================\n" +
+                                    "NOM du client : " + nom + "\n" +
+                                    "Prenom du client : " + prenom + "\n" +
+                                    "Date et heure : " + maintenant.format(format) + "\n" +
+                                    "Vous avez choisi : ****" + listeFilms.get(choix_film - 1) + "****\n" +
+                                    "Craineau horaires : ***** " + heure + "*****\n" +
+                                    "Nombre de place : *" + nb_places + "* , au tarif **" + type_tick + "**\n" +
+                                    "Le prix de la réservation est de : " + prix + " € \n" +
+                                    "======================================================";
+                            System.out.printf("\n %s",ticket);
+
+
+                            reservation.put(String.valueOf(nb_res),ticket);
+                            nb_res += 1;
+                        }
+
+                        System.out.printf(all_menu.get(0)); // lancement menu
+                        break;
+
+                    }
                     break;
                 case 2: // reservation
 
@@ -148,7 +222,7 @@ public class Main {
                     System.out.println("------------------------------------------------|");
                     // *******************************************************************
                     System.out.println("Appuyer sur 0 pour retourner en arrière");
-
+                    System.out.println("Vous pouvez retournez sur catalogue pour rechercher un film");
                     int choix_film = sc.nextInt();
                     sc.nextLine();
 
