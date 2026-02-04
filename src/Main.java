@@ -89,10 +89,10 @@ public class Main {
         // """"""""""""""""""""""""""debut du code"""""""""""""""""""""
         System.out.print(" Bonjour ! Bienvenue à la Pellicule d'or 🎥.\n " + "Je suis CinéBot, votre assistant de réservation. \n" + "Afin d'obtenir le traitement adéquat, veuillez fournir les informations suivantes :");
         System.out.print("\n==================================================================");
-        System.out.print("\n Quel est votre Nom ?  ");
-        String nom = sc.nextLine();
         System.out.print("\n Quel est votre Prénom ?  ");
         String prenom = sc.nextLine();
+        System.out.print("\n Quel est votre Nom ?  ");
+        String nom = sc.nextLine();
         System.out.print("\n Quel est votre Age ? ( Veuillez entrez un nombre uniquement !!! ) : ");
         int age = sc.nextInt();
         System.out.print("\n==================================================================");
@@ -100,9 +100,9 @@ public class Main {
 
 
         boolean continu = true;
+        int nb_res= 1; // Nombre de réservation
         System.out.printf(all_menu.get(0)); // lancement menu
         while (continu) {
-            int nb_res= 1;
             int choix = sc.nextInt();
             sc.nextLine();
             switch (choix) {
@@ -148,7 +148,7 @@ public class Main {
                     }
                     System.out.println("------------------------------------------------|");
                     // *******************************************************************
-
+                    System.out.println("Appuyer sur 0 pour retourner en arrière");
 
                     int choix_film = sc.nextInt();
                     sc.nextLine();
@@ -164,7 +164,7 @@ public class Main {
 
                         System.out.printf("Vous avez choisi %s", listeFilms.get(choix_film - 1));
                         System.out.print("\n Veuillez choisir votre créneau horaire : ");
-                        System.out.printf("\n %s", horaires.get(choix_film));
+                        System.out.printf("\n %s", horaires.get(choix_film-1));
                         System.out.print("\n Ecrivez le choix de l'heure comme écrit devant vous : ");
                         String heure = sc.nextLine();
                         System.out.print("\nQuels types de tickets voulez-vous  ?");
@@ -221,6 +221,7 @@ public class Main {
                             all_menu.get(0);
                         } else if (choix_admin1==0) {
                             System.out.print("Aurevoir !");
+                            System.out.print("Appuer sur 3 pour revenir en arrière");
                             all_menu.get(0);
                         }
 
