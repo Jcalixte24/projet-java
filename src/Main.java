@@ -8,16 +8,16 @@ import java.util.Map;
 public class Main {
 
     // ================================================================
-    // METHODE faireReservation - ETAPE 2 & 3
-    // Factorisée pour éviter la duplication
-    // ETAPE 4 : on sauvegarde maintenant la réservation dans un fichier
+    // METHODE faireReservation
+    // Factorisee pour eviter la duplication (cas 1 et cas 2)
+    // ETAPE 4 : sauvegarde automatique dans le fichier apres chaque reservation
     // ================================================================
     static void faireReservation(Client client, ArrayList<String> listeFilms,
                                   ArrayList<Film> listeFilmsObjets, ArrayList<String> horaires,
                                   int[] ventesParFilm, Scanner sc,
                                   HashMap<String, Reservation> listeReservations, int choix_film) {
 
-        // -------- validation du numéro de film --------
+        // -------- validation du numero de film --------
         if (choix_film < 1 || choix_film > listeFilms.size()) {
             System.out.println("Numero de film invalide !");
             return;
@@ -54,13 +54,14 @@ public class Main {
         }
 
         // ETAPE 3 - polymorphisme : calcul du prix selon le type de client
+        // Si ClientVIP -> -20% automatiquement via la methode surchargee
         int prix = client.calculerPrix(nb_places, type_tick);
 
         if (client instanceof ClientVIP) {
             System.out.println("Reduction VIP de 20% appliquee automatiquement !");
         }
 
-        // ETAPE 3 - création de l'objet Reservation
+        // ETAPE 3 - creation de l'objet Reservation
         Reservation nouvelleReservation = new Reservation(
                 client, listeFilms.get(choix_film - 1), heure, nb_places, type_tick, prix
         );
@@ -69,17 +70,17 @@ public class Main {
         String cleReservation = String.valueOf(listeReservations.size() + 1);
         listeReservations.put(cleReservation, nouvelleReservation);
 
-        // -------- mise à jour des statistiques --------
+        // -------- mise a jour des statistiques --------
         ventesParFilm[choix_film - 1] += nb_places;
 
-        // ETAPE 3 - ajout dans l'historique de l'objet Client
+        // ETAPE 3 - ajout dans l'historique du client
         client.historiqueReservations.add(listeFilms.get(choix_film - 1));
 
         // -------- affichage du ticket --------
         System.out.println("\n" + nouvelleReservation.toString());
         System.out.println("\nReservation enregistree avec succes !");
 
-        // ETAPE 4 - sauvegarde automatique dans le fichier !
+        // ETAPE 4 - sauvegarde automatique dans le fichier
         GestionFichiers.sauvegarderReservation(nouvelleReservation);
     }
 
@@ -89,15 +90,15 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         // +++++++++++++++++++++++++++++les tableaux et listes++++++++++++++++++++++++++++++++
-        ArrayList<String> all_menu = new ArrayList<>();
-        ArrayList<String> listeFilms = new ArrayList<>();
-        ArrayList<String> horaires = new ArrayList<>();
-        ArrayList<Film> listeFilmsObjets = new ArrayList<>();
+        ArrayList<String> all_menu         = new ArrayList<>();
+        ArrayList<String> listeFilms       = new ArrayList<>();
+        ArrayList<String> horaires         = new ArrayList<>();
+        ArrayList<Film> listeFilmsObjets   = new ArrayList<>();
         HashMap<String, Reservation> listeReservations = new HashMap<>();
 
 
         // ***************************************les add films (films PAR DEFAUT)*****************************************
-        // Ces films sont utilises si films.txt n'existe pas encore
+        // Ces films sont utilises uniquement si films.txt n'existe pas encore
         listeFilms.add("Avatar : La Voie de l'Eau");
         listeFilms.add("Super Mario Bros. le Film");
         listeFilms.add("Oppenheimer");
@@ -124,39 +125,42 @@ public class Main {
         horaires.add("13h30, 16h15");
         horaires.add("15h30, 20h00, 22h45");
 
-        listeFilmsObjets.add(new Film("Avatar : La Voie de l'Eau",           "Science-Fiction",  192, "James Cameron"));
-        listeFilmsObjets.add(new Film("Super Mario Bros. le Film",            "Animation",         92, "Aaron Horvath"));
-        listeFilmsObjets.add(new Film("Oppenheimer",                          "Drame Historique", 180, "Christopher Nolan"));
-        listeFilmsObjets.add(new Film("Oscar est en retard",                  "Comedie",           95, "Inconnu"));
-        listeFilmsObjets.add(new Film("Barbie et les 12 princesses",          "Animation",         82, "Greg Richardson"));
-        listeFilmsObjets.add(new Film("Spider-Man : Across the Spider-Verse", "Animation",        140, "Joaquim Dos Santos"));
-        listeFilmsObjets.add(new Film("Ia Institut : les aventures a griffith","Aventure",        110, "Inconnu"));
-        listeFilmsObjets.add(new Film("Le Roi Lion",                          "Animation",        118, "Jon Favreau"));
-        listeFilmsObjets.add(new Film("Les Indestructibles",                  "Animation",        115, "Brad Bird"));
-        listeFilmsObjets.add(new Film("Henry Danger : le film",               "Action",           100, "Inconnu"));
-        listeFilmsObjets.add(new Film("Baby-foot : Qui sera le grand maitre ?","Sport",            90, "Inconnu"));
-        listeFilmsObjets.add(new Film("Star Wars",                            "Science-Fiction",  121, "George Lucas"));
-
-        // FIX BUG : ventesParFilm initialise APRES les films
-        int[] ventesParFilm = new int[listeFilms.size()];
+        listeFilmsObjets.add(new Film("Avatar : La Voie de l'Eau",            "Science-Fiction",  192, "James Cameron"));
+        listeFilmsObjets.add(new Film("Super Mario Bros. le Film",             "Animation",         92, "Aaron Horvath"));
+        listeFilmsObjets.add(new Film("Oppenheimer",                           "Drame Historique", 180, "Christopher Nolan"));
+        listeFilmsObjets.add(new Film("Oscar est en retard",                   "Comedie",           95, "Inconnu"));
+        listeFilmsObjets.add(new Film("Barbie et les 12 princesses",           "Animation",         82, "Greg Richardson"));
+        listeFilmsObjets.add(new Film("Spider-Man : Across the Spider-Verse",  "Animation",        140, "Joaquim Dos Santos"));
+        listeFilmsObjets.add(new Film("Ia Institut : les aventures a griffith","Aventure",         110, "Inconnu"));
+        listeFilmsObjets.add(new Film("Le Roi Lion",                           "Animation",        118, "Jon Favreau"));
+        listeFilmsObjets.add(new Film("Les Indestructibles",                   "Animation",        115, "Brad Bird"));
+        listeFilmsObjets.add(new Film("Henry Danger : le film",                "Action",           100, "Inconnu"));
+        listeFilmsObjets.add(new Film("Baby-foot : Qui sera le grand maitre ?","Sport",             90, "Inconnu"));
+        listeFilmsObjets.add(new Film("Star Wars",                             "Science-Fiction",  121, "George Lucas"));
 
 
         // ======================== ETAPE 4 : CHARGEMENT AU DEMARRAGE ========================
-        // On cree le dossier data/ si besoin
+        // Tout ce bloc se passe AVANT le menu et AVANT d'accueillir l'utilisateur
+
+        // 1. On cree le dossier data/ si besoin
         GestionFichiers.creerDossierData();
 
-        // On essaie de charger les films depuis films.txt
-        // Si le fichier existe, il remplace les films par defaut ci-dessus
-        GestionFichiers.chargerFilms(listeFilms, horaires, listeFilmsObjets);
-
-        // Si le fichier films.txt n'existait pas, on le cree maintenant
+        // 2. On verifie si films.txt existe deja
         java.io.File fichierFilms = new java.io.File(GestionFichiers.CHEMIN_FILMS);
-        if (!fichierFilms.exists()) {
+
+        if (fichierFilms.exists()) {
+            // films.txt existe : on charge les films depuis le fichier
+            // Les listes par defaut ci-dessus seront remplacees
+            GestionFichiers.chargerFilms(listeFilms, horaires, listeFilmsObjets);
+        } else {
+            // films.txt n'existe pas encore : on le cree avec les films par defaut
             GestionFichiers.sauvegarderFichierFilms(listeFilms, horaires, listeFilmsObjets);
         }
 
-        // On remet ventesParFilm a la bonne taille apres le chargement
-        ventesParFilm = new int[listeFilms.size()];
+        // 3. On reajuste ventesParFilm a la bonne taille
+        // (apres le chargement, listeFilms peut avoir change de taille)
+        int[] ventesParFilm = new int[listeFilms.size()];
+
         // ====================================================================================
 
 
@@ -164,28 +168,27 @@ public class Main {
         String menu =
                 "\n" +
                 "╔══════════════════════════════════════════════════╗\n" +
-                "║            🎬 LA PELLICULE D'OR 🎬               ║\n" +
+                "║            LA PELLICULE D'OR                     ║\n" +
                 "╠══════════════════════════════════════════════════╣\n" +
-                "║    1. 📂  Catalogue                              ║\n" +
-                "║    2. 🎟️  Reserver ticket                        ║\n" +
-                "║    3. ℹ️   Se renseigner                         ║\n" +
-                "║    0. ❌  Quitter                                ║\n" +
+                "║    1.  Catalogue                                 ║\n" +
+                "║    2.  Reserver ticket                           ║\n" +
+                "║    3.  Se renseigner                             ║\n" +
+                "║    0.  Quitter                                   ║\n" +
                 "╠══════════════════════════════════════════════════╣\n" +
                 "║  Commandes : /help  /stats  /history             ║\n" +
                 "╚══════════════════════════════════════════════════╝\n";
 
-        String menuInfo = """
-                \n
-                ┌──────────────────────────────────────────────────┐
-                │               ℹ️  INFOS PRATIQUES                │
-                ├──────────────────────────────────────────────────┤
-                │  📍 Adresse : 12 Rue du Cinema, Epita            │
-                │  🕒 Ouverture : 10h00 - 00h30 (7j/7)             │
-                │  🍿 Pop-corn : Sucre ou Sale (5.00 euros)         │
-                │  📞 Contact : 01 23 45 67 89                     │
-                │  0. retour                                       │
-                └──────────────────────────────────────────────────┘
-                """;
+        String menuInfo =
+                "\n" +
+                "┌──────────────────────────────────────────────────┐\n" +
+                "│               INFOS PRATIQUES                    │\n" +
+                "├──────────────────────────────────────────────────┤\n" +
+                "│  Adresse  : 12 Rue du Cinema, Epita              │\n" +
+                "│  Horaires : 10h00 - 00h30 (7j/7)                 │\n" +
+                "│  Pop-corn : Sucre ou Sale (5.00 euros)           │\n" +
+                "│  Contact  : 01 23 45 67 89                       │\n" +
+                "│  0. retour                                       │\n" +
+                "└──────────────────────────────────────────────────┘\n";
 
         all_menu.add(menu);
         all_menu.add(menuInfo);
@@ -206,7 +209,6 @@ public class Main {
         sc.nextLine();
 
         // ======================== ETAPE 5 : VALIDATION EMAIL ========================
-        // On demande l'email et on le verifie avec le Validateur
         // La boucle tourne tant que l'email est invalide
         String email = "";
         boolean emailOk = false;
@@ -214,7 +216,7 @@ public class Main {
             System.out.print("\n Quel est votre email ?  ");
             email = sc.nextLine();
             if (Validateur.emailValide(email)) {
-                emailOk = true;     // email correct, on sort de la boucle
+                emailOk = true;
             } else {
                 System.out.println(" Email invalide ! Exemple correct : prenom@gmail.com");
             }
@@ -235,27 +237,26 @@ public class Main {
 
 
         boolean continu = true;
-        System.out.printf(all_menu.get(0)); // lancement menu
+        System.out.printf(all_menu.get(0));
 
         while (continu) {
 
             // ======================== ETAPE 5 : LECTURE EN STRING ========================
-            // On lit la saisie en String pour pouvoir detecter les commandes (/help etc.)
+            // On lit en String pour detecter les commandes (/help, /stats, /history)
             String saisieChoix = sc.nextLine();
 
-            // verifier si c'est une commande speciale (/help, /stats, /history)
+            // verifier si c'est une commande speciale
             if (Validateur.estCommande(saisieChoix)) {
                 Validateur.traiterCommande(saisieChoix, client, listeReservations, ventesParFilm, listeFilms);
                 System.out.printf(all_menu.get(0));
-                continue;   // on repart au debut de la boucle sans passer dans le switch
+                continue;
             }
 
-            // sinon on essaie de convertir la saisie en nombre
+            // sinon on convertit la saisie en nombre
             int choix;
             try {
                 choix = Integer.parseInt(saisieChoix);
             } catch (NumberFormatException e) {
-                // si l'utilisateur a tape autre chose qu'un nombre ou une commande
                 System.out.println("Choix invalide ! Entrez 0, 1, 2, 3 ou une commande (/help).");
                 System.out.printf(all_menu.get(0));
                 continue;
@@ -278,7 +279,6 @@ public class Main {
 
                     String saisieCatalogue = sc.nextLine();
 
-                    // cas retour
                     if (saisieCatalogue.equals("0")) {
                         System.out.printf(all_menu.get(0));
                         break;
@@ -329,7 +329,7 @@ public class Main {
 
                     System.out.print(" |||||||||||  Bienvenue dans le menu de reservation |||||||||");
                     System.out.print("\n ---------------------Choisissez votre film--------------------------------\n");
-                    System.out.println("\n-----------------------------------------------|");
+                    System.out.println("\n------------------------------------------------|");
                     System.out.println("|             FILMS A L'AFFICHE                 |");
                     System.out.println("------------------------------------------------|");
 
@@ -338,7 +338,6 @@ public class Main {
                     }
                     System.out.println("------------------------------------------------|");
                     System.out.println("Appuyer sur 0 pour retourner en arriere");
-                    System.out.println("Vous pouvez retournez sur catalogue pour rechercher un film");
 
                     int choix_film = sc.nextInt();
                     sc.nextLine();
@@ -366,8 +365,8 @@ public class Main {
                         System.out.printf(all_menu.get(0));
 
                     } else if (choix3 == 1234) {
-                        System.out.print("========Bienvenue dans l'espace admin========");
-                        System.out.printf("\nIl y a actuellement %d reservation(s).\n", listeReservations.size());
+                        System.out.println("======== Bienvenue dans l'espace admin ========");
+                        System.out.printf("Il y a actuellement %d reservation(s).\n", listeReservations.size());
 
                         // film le plus populaire
                         int maxVentes = 0;
@@ -380,7 +379,7 @@ public class Main {
                         }
                         if (maxVentes > 0) {
                             System.out.println("Film le plus populaire : " + listeFilms.get(indexFilmPopulaire)
-                                    + " avec " + maxVentes + " places vendues !");
+                                    + " avec " + maxVentes + " places vendues.");
                         } else {
                             System.out.println("Aucune place n'a encore ete vendue.");
                         }
@@ -393,8 +392,8 @@ public class Main {
                         System.out.println("Chiffre d'affaires total : " + chiffreAffaires + " euros");
 
                         System.out.println("\n1. Voir les reservations en memoire");
-                        System.out.println("2. Voir les reservations dans le fichier");   // ETAPE 4
-                        System.out.println("3. Archiver les reservations");               // ETAPE 4
+                        System.out.println("2. Voir les reservations dans le fichier");
+                        System.out.println("3. Archiver les reservations");
                         System.out.println("0. Retourner");
                         System.out.print("Votre choix : ");
 
@@ -402,7 +401,6 @@ public class Main {
                         sc.nextLine();
 
                         if (choix_admin1 == 1) {
-                            // affichage via toString() des objets Reservation
                             System.out.println("\n===== RESERVATIONS EN MEMOIRE =====");
                             if (listeReservations.isEmpty()) {
                                 System.out.println("Aucune reservation enregistree pour le moment.");
@@ -413,10 +411,8 @@ public class Main {
                                 }
                             }
                         } else if (choix_admin1 == 2) {
-                            // ETAPE 4 - lire le fichier reservations_actives.txt
                             GestionFichiers.afficherReservationsFichier();
                         } else if (choix_admin1 == 3) {
-                            // ETAPE 4 - archiver dans reservations_archives.txt
                             GestionFichiers.archiverReservations();
                         }
 
